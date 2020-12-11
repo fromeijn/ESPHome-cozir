@@ -1,0 +1,42 @@
+esphome:
+  name: cozir
+  platform: ESP32
+  board: esp-wrover-kit
+  includes:
+    - read_cozir.h
+
+wifi:
+  ssid: "your wifi"
+  password: "your wifi pass"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Cozir Fallback Hotspot"
+    password: "fallback pass"
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+uart:
+  id: uart_bus
+  tx_pin: 17
+  rx_pin: 16
+  baud_rate: 9600
+
+sensor:
+- platform: custom
+  lambda: |-
+    auto cozir_sensor = new UartReadLineSensor(id(uart_bus));
+    App.register_component(cozir_sensor);
+    return {cozir_sensor};
+
+  sensors:
+    name: "CozIR CO2"
+    unit_of_measurement: ppm
